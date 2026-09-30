@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI节能小侦探 · 图像识别演示</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>🔍 AI节能小侦探</h1>
+      <p>用图像识别排查校园“空耗用电”</p>
+      <div id="health" class="pill muted">服务连接中</div>
+    </header>
+
+    <div class="main">
+      <!-- 左：上传与画面 -->
+      <section class="panel">
+        <h2>① 上传或采集校园画面</h2>
+
+        <div class="upload-area" id="dropzone">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
+          </svg>
+          <p>点击上传，或把图片拖到这里</p>
+          <p class="upload-hint">支持 JPG / PNG，建议使用教室实拍图</p>
+        </div>
+        <input id="fileInput" type="file" accept="image/*" hidden>
+
+        <div class="toolbar">
+          <button id="cameraButton" class="button">启动摄像头</button>
+          <label class="test-switch">
+            <input id="testControl" type="checkbox">
+            <span>测试图片参与控制</span>
+          </label>
+        </div>
+        <p class="hint">开启后测试图每 2.5 秒循环检测，持续无人满 10 秒才关闭设备</p>
+
+        <div class="viewer" id="viewer">
+          <video id="video" autoplay muted playsinline></video>
+          <img id="resultImage" alt="YOLO 识别结果">
+          <canvas id="overlayCanvas"></canvas>
+          <div id="emptyView">等待上传图片或启动摄像头</div>
+        </div>
+        <canvas id="captureCanvas" hidden></canvas>
+
+        <div class="metrics">
+          <div><span>本帧结论</span><strong id="conclusion">等待检测</strong></div>
+          <div><span>人数</span><strong id="personCount">—</strong></div>
+          <div><span>最高置信度</span><strong id="confidence">—</strong></div>
+          <div><span>推理状态</span><strong id="inference">空闲</strong></div>
+        </div>
+      </section>
+
+      <!-- 右：判断结果与设备响应 -->
+      <aside class="panel">
+        <h2>② AI判断与设备响应</h2>
+
+        <div class="result-box" id="resultBox">
+          <div class="result-icon" id="resultIcon">⏳</div>
+          <div class="result-text" id="resultText">等待检测</div>
+          <div class="result-sub" id="resultSub">设备保持原状态，不会主动开启</div>
+        </div>
+
+        <div class="occupancy">
+          <span id="occupancyDot"></span>
+          <div>
+            <small>教室状态</small>
+            <strong id="occupancy">未知</strong>
+          </div>
+        </div>
+        <div class="progress">
+          <div id="progressBar"></div>
+        </div>
+        <p id="timerText" class="subtle">尚未开始无人确认</p>
+
+        <div class="devices" id="devices"></div>
+        <p class="notice">当前为模拟设备适配器，点击设备可模拟真实开关状态。检测到人员时系统只取消待执行的关闭程序，不会主动开启设备。</p>
+
+        <h3>运行日志</h3>
+        <div id="logs" class="logs"></div>
+      </aside>
+    </div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+
+</html>
